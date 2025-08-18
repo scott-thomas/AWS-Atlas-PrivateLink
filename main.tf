@@ -58,7 +58,7 @@ resource "aws_vpc_endpoint" "aws_endpoint" {
   tags = {
     Name        = "thomas-scott-mongodb-atlas-endpoint"
     Environment = "production"
-    Project     = "vector-search"
+    Project     = "movies-search"
   }
 }
 

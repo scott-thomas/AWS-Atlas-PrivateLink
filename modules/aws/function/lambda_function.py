@@ -4,6 +4,7 @@ from pymongo.errors import ConnectionFailure, OperationFailure
 import json
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
+from bson.json_util import dumps
 
 def lambda_handler(event, context):
     """
@@ -21,7 +22,8 @@ def lambda_handler(event, context):
     # This should be set from Terraform using: 
     # data.mongodbatlas_cluster.your_cluster.connection_strings[0].private_endpoint[0].connection_string
     mongodb_uri = os.environ.get("MONGODB_URI")
-    database_name = os.environ.get("MONGODB_DATABASE", "my_new_database")
+    # For the sample_mflix dataset, use the correct database and collection
+    database_name = os.environ.get("MONGODB_DATABASE", "sample_mflix")
     
     if not mongodb_uri:
         print("Error: ATLAS_CONNECTION_STRING environment variable is not set.")
@@ -34,7 +36,7 @@ def lambda_handler(event, context):
     try:
         print(f"Attempting to connect to MongoDB Atlas using private endpoint...")
         print(f"Database: {database_name}")
-        
+
         # Verify AWS credentials are available
         try:
             session = boto3.Session()
@@ -65,39 +67,32 @@ def lambda_handler(event, context):
         result = client.admin.command('ping')
         print(f"Successfully connected to MongoDB Atlas! Ping result: {result}")
 
-        # Test database access
+        # Access the sample_mflix.movies collection and return collection info and a sample of movies
         db = client[database_name]
-        
-        # Try to list collections to verify database access
         try:
             collections = db.list_collection_names()
-            print(f"Successfully accessed database '{database_name}'. Collections: {collections}")
-            
-            # Optional: Test a simple write/read operation
-            test_collection = db['test_connection']
-            test_doc = {"test": "connection", "timestamp": context.aws_request_id}
-            insert_result = test_collection.insert_one(test_doc)
-            print(f"Test document inserted with ID: {insert_result.inserted_id}")
-            
-            # Read it back
-            retrieved_doc = test_collection.find_one({"_id": insert_result.inserted_id})
-            print(f"Test document retrieved: {retrieved_doc}")
-            
-            # Clean up test document
-            test_collection.delete_one({"_id": insert_result.inserted_id})
-            print("Test document cleaned up")
-            
+            print(f"Collections in database '{database_name}': {collections}")
+            movies_collection = db["movies"]
+            doc_count = movies_collection.count_documents({})
+            print(f"sample_mflix.movies document count: {doc_count}")
+            # Limit to 5 movies for debug
+            movies_cursor = movies_collection.find().limit(5)
+            movies = list(movies_cursor)
+            print(f"Returning {len(movies)} sample movies from sample_mflix.movies.")
+            return {
+                'statusCode': 200,
+                'body': dumps({
+                    'collections': collections,
+                    'movies_count': doc_count,
+                    'sample_movies': movies
+                })
+            }
         except OperationFailure as db_error:
             print(f"Database operation failed: {db_error}")
             return {
                 'statusCode': 500,
                 'body': json.dumps(f'Database access failed: {db_error}')
             }
-
-        return {
-            'statusCode': 200,
-            'body': json.dumps('Successfully connected to MongoDB Atlas and performed database operations.')
-        }
 
     except ConnectionFailure as e:
         print(f"MongoDB connection error: {e}")

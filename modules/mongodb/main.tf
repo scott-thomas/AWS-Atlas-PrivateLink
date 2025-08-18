@@ -1,3 +1,29 @@
+resource "null_resource" "load_sample_dataset" {
+  provisioner "local-exec" {
+    command = <<EOT
+      set -e
+      http_response=$(mktemp)
+      http_code=$(curl -u "${var.public_key}:${var.private_key}" \
+        --digest -X POST \
+        --header "Accept: application/vnd.atlas.2025-03-12+json" \
+        --header "Content-Type: application/json" \
+        -o "$http_response" -w "%%{http_code}" \
+        "https://cloud.mongodb.com/api/atlas/v2/groups/${data.mongodbatlas_project.existing_project.id}/sampleDatasetLoad/${var.cluster_name}")
+      if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+        echo "Failed to load sample dataset. Response code: $http_code"
+        cat "$http_response"
+        exit 1
+      fi
+      rm -f "$http_response"
+    EOT
+    interpreter = ["/bin/bash", "-c"]
+  }
+  triggers = {
+    always_run = timestamp()
+  }
+  depends_on = [mongodbatlas_cluster.this]
+}
+
 resource "mongodbatlas_cluster" "this" {
   project_id   = data.mongodbatlas_project.existing_project.id
   name         = var.cluster_name
@@ -26,7 +52,7 @@ resource "mongodbatlas_database_user" "iam_user" {
   
   roles {
     role_name     = "readWrite"
-    database_name = "admin"
+    database_name = var.database_name
   }
   
   aws_iam_type = "ROLE"  # This tells Atlas it's an IAM role

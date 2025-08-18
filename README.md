@@ -1,6 +1,6 @@
 # AWS-Atlas-PrivateLink
 
-Provision a secure, private connection between AWS Lambda and MongoDB Atlas using Terraform and AWS PrivateLink.
+Provision a secure, private connection between AWS Lambda and MongoDB Atlas using Terraform and AWS PrivateLink (For Demo purposes only)
 
 ## Features
 - Automated VPC, subnets, and security group setup
@@ -36,8 +36,7 @@ Provision a secure, private connection between AWS Lambda and MongoDB Atlas usin
 
 ## API Usage
 - The deployed API Gateway exposes your Lambda at:
-  `https://<api-id>.execute-api.<region>.amazonaws.com/prod/`
-- Example endpoint: `GET /movies` returns a list of movies from MongoDB Atlas.
+  `https://<api-id>.execute-api.<region>.amazonaws.com/dev/movies` GET Endpoint that returns a list of movies from MongoDB Atlas.
 
 ## Project Structure
 ```

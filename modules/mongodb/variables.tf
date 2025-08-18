@@ -31,3 +31,9 @@ variable "iam_role" {
     description = "Lambda Execution role"
     type = string
 }
+
+variable "database_name" {
+    description = "The name of the database to use for the IAM user"
+    type        = string
+    default     = "sample_mflix"  # Default to sample_mflix, can be overridden
+}

@@ -26,7 +26,7 @@ resource "aws_api_gateway_integration" "get_movies_lambda" {
 # =============================
 
 resource "aws_api_gateway_rest_api" "lambda_api" {
-  name        = "vector-search-api"
+  name        = "movie-search-api"
   description = "API Gateway for Lambda proxy integration"
 }
 

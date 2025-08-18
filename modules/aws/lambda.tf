@@ -1,6 +1,6 @@
 # Create an IAM role for the Lambda function
 resource "aws_iam_role" "lambda_exec" {
-  name = "lambda-exec-role-private-vpc-vector-search"
+  name = "lambda-exec-role-private-vpc-movie-search"
 
   assume_role_policy = jsonencode({
     Version   = "2012-10-17",
@@ -57,12 +57,12 @@ resource "aws_security_group" "lambda_sg" {
 }
 
 resource "aws_s3_bucket" "lambda_deployment_bucket" {
-  bucket_prefix = "lambda-code-vector-search-" # AWS recommends using a prefix for unique names
+  bucket_prefix = "lambda-code-movie-search-" # AWS recommends using a prefix for unique names
 
   # Enable versioning to easily revert to previous Lambda versions if needed
 
   tags = {
-    Name = "Lambda Deployment Bucket for Vector Search"
+    Name = "Lambda Deployment Bucket for Movie Search"
   }
 }
 
@@ -77,7 +77,7 @@ resource "aws_s3_object" "lambda_code_upload" {
 }
 
 resource "aws_lambda_function" "my_lambda" {
-  function_name = "vector-search-lambda" # Name for your Lambda function
+  function_name = "get-movies" # Name for your Lambda function
   handler       = "lambda_function.lambda_handler" # File and function name
   runtime       = "python3.9"                      # Or python3.10, python3.11 etc.
   role          = aws_iam_role.lambda_exec.arn
@@ -99,7 +99,7 @@ resource "aws_lambda_function" "my_lambda" {
   environment {
     variables = {
       MONGODB_URI = var.atlas_endpoint_service_name
-      MONGODB_DATABASE = "admin"
+      MONGODB_DATABASE = "sample_mflix"
       # Replace <user>, <password>, and the VPC endpoint DNS name with your actual values.
       # It's highly recommended to use AWS Secrets Manager for sensitive data like passwords.
     }

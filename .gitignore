@@ -1,0 +1,30 @@
+# Local .terraform directories
+**/.terraform/*
+
+.DS_Store
+
+.terraform.lock.hcl
+
+terraform.tfstate
+terraform.tfvars
+
+# Ignore variables files
+*.auto.tfvars
+
+# Ignore override files
+*.tfoverride
+
+# Ignore environment-specific files
+.envrc
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+modules/aws/function/dist/
+modules/aws/function/lambda_function.zip
+
+terraform.tfstate.backup
+
+# But don't ignore lambda_function.py
+!./modules/aws/function/lambda_function.py

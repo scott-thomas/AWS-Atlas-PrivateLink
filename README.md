@@ -27,15 +27,16 @@ Provision a secure, private connection between AWS Lambda and MongoDB Atlas usin
    ```
 2. **Configure your variables:**
    - Copy `terraform.example.tfvars` to `terraform.tfvars` and fill in your credentials and project info.
-3. **Build Lambda assets:**
-   - Ensure your Lambda code and requirements are in `modules/aws/function/`.
-   - Terraform will build and package assets automatically.
+3. **Create a python virtualenv:**
+   ```sh
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
 4. **Initialize and apply Terraform:**
    ```sh
    terraform init
    terraform apply
    ```
-
 ## API Usage
 - The deployed API Gateway exposes your Lambda at:
   `https://<api-id>.execute-api.<region>.amazonaws.com/dev/movies` GET Endpoint that returns a list of movies from MongoDB Atlas.

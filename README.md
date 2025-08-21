@@ -2,6 +2,8 @@
 
 Provision a secure, private connection between AWS Lambda and MongoDB Atlas using Terraform and AWS PrivateLink (For Demo purposes only)
 
+<img width="761" height="391" alt="AWS-Atlas-PrivateLink drawio" src="https://github.com/user-attachments/assets/6a607f2b-fda9-420c-a0b6-59e0410219e5" />
+
 ## Features
 - Automated VPC, subnets, and security group setup
 - MongoDB Atlas cluster and IAM user provisioning

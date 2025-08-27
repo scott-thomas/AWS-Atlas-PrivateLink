@@ -6,7 +6,7 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
 
   tags = {
-    Name = "mongodb-vpc"
+    Name = "lambda-vpc"
   }
 }
 
@@ -48,13 +48,9 @@ resource "aws_subnet" "private_c" {
 }
 
 resource "aws_security_group" "endpoint_sg" {
-  name        = "mongodb-atlas-endpoint-sg"
+  name        = "mongodb-lambda-atlas-endpoint-sg"
   description = "Allow traffic to MongoDB Atlas endpoint"
   vpc_id      = aws_vpc.main.id
-
-  # Allow inbound traffic from your application servers on the MongoDB ports.
-  # IMPORTANT: Replace "0.0.0.0/0" with the security group of your Lambda function
-  # (e.g., security_groups = [aws_security_group.lambda_sg.id]) for production.
 
   ingress {
     from_port   = 1024
@@ -96,15 +92,3 @@ resource "aws_security_group" "endpoint_sg" {
     Name = "mongodb-atlas-endpoint-sg"
   }
 }
-
-# resource "aws_vpc_endpoint" "aws_endpoint" {
-#   vpc_id              = aws_vpc.main.id
-#   service_name        = var.atlas_endpoint_service_name
-#   vpc_endpoint_type   = "Interface"
-#   subnet_ids          = [aws_subnet.private_a.id, aws_subnet.private_b.id, aws_subnet.private_c.id]
-#   security_group_ids  = [aws_security_group.endpoint_sg.id]
-
-#   tags = {
-#     Name = "mongodb-atlas-endpoint"
-#   }
-# }

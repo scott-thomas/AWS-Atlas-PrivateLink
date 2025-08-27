@@ -15,7 +15,7 @@ Provision a secure, private connection between AWS Lambda and MongoDB Atlas usin
 - AWS account with programmatic access (Access Key, Secret Key, Session Token)
 - MongoDB Atlas account
 - Atlas organization and project created
-- Atlas API keys (public and private)
+- Atlas API project key (public and private)
 - Terraform >= 1.0
 - Python 3.x (for Lambda function)
 
